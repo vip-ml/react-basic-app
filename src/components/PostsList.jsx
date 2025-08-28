@@ -6,19 +6,28 @@ import { useState } from "react";
 
 function PostsList({ isPosting, onStopPosting }) {
 
+    const [posts, setPosts] = useState([]);
 
+    function addPostHandler(postData) {
+        setPosts((existing) => [postData, ...existing])
+    }
 
 
     return (
         <>
             {isPosting && (<Modal onClick={onStopPosting}>
-                <NewPost />
+                <NewPost onCancel={onStopPosting} onAddPost={addPostHandler} />
             </Modal>)}
-            <ul className={classes.Posts} >
-
-                <Post author={"Kevin"} content={"I am 23 years old"} />
-                <Post author={"Hena"} content={"I am 20 years old"} />
-            </ul >
+            {posts.length > 0 && (
+                <ul className={classes.Posts} >
+                    {posts.map((post) => <Post key={post.body} author={post.author} body={post.body} />)}
+                </ul >)}
+            {posts.length === 0 && (
+                <div style = {{textAlign:"center", color:"white"}}>
+                    <h2>There are no posts yet</h2>
+                    <p>Start adding posts now!</p>
+                </div>
+            )}
         </>
     );
 }
